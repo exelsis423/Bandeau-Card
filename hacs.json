@@ -1,0 +1,7 @@
+{
+  "name": "bandeau-card",
+  "content_in_root": false,
+  "render_readme": true,
+  "filename": "bandeau-card.js",
+  "homeassistant": "2026.1.0"
+}
