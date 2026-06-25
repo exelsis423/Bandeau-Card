@@ -269,7 +269,7 @@ class BandeauCard extends LitElement {
             <div class="big ${this.getTempClass(temp)}"
                  data-bg="88.8°"
                  style="cursor:pointer"
-                 @click=${() => this.handleTapAction(c.temperature)}>
+                 @click=${() => this.handleTapAction(c.temperature_action || { action: "more-info", entity: c.temperature })}>
 
               <span>${temp}°</span>
             </div>
@@ -277,7 +277,7 @@ class BandeauCard extends LitElement {
             <!-- ICON -->
             <div class="icon"
                 style="cursor:pointer"
-                @click=${() => this.handleTapAction(c.weather)}>
+                @click=${() => this.handleTapAction(c.weather_action || { action: "more-info", entity: c.weather })}>
               ${this.getWeatherIcon(this.hass.states[c.weather]?.state)}
             </div>
 
@@ -300,30 +300,39 @@ class BandeauCard extends LitElement {
       </ha-card>
     `;
   }
+
+  handleTapAction(actionConfig) {
+    if (!actionConfig) return;
   
-  handleTapAction(entity) {
-    const action = this.config?.tap_action;
-
-    if (!action) return;
-
+    // Si l'action est configurée sous forme de chaîne (compatibilité ou raccourci)
+    const action = typeof actionConfig === 'string' ? { action: "more-info", entity: actionConfig } : actionConfig;
+  
     switch (action.action) {
-
       case "more-info":
+        // Utilise l'entité spécifiée dans l'action, ou celle par défaut
+        const entityId = action.entity || action.entity_id;
+        if (!entityId) return;
+        
         this.dispatchEvent(new CustomEvent("hass-more-info", {
-          detail: { entityId: entity },
+          detail: { entityId: entityId },
           bubbles: true,
           composed: true
         }));
         break;
-
+  
       case "navigate":
-        window.history.pushState(null, "", action.navigation_path);
-        window.dispatchEvent(new Event("location-changed"));
+        if (action.navigation_path) {
+          window.history.pushState(null, "", action.navigation_path);
+          window.dispatchEvent(new Event("location-changed"));
+        }
         break;
-
+  
       case "call-service":
-        const [domain, service] = action.service.split(".");
-        this.hass.callService(domain, service, action.service_data || {});
+      case "perform-action": // HA a renommé call-service en perform-action récemment
+        const serviceName = action.service || action.action;
+        if (!serviceName) return;
+        const [domain, service] = serviceName.split(".");
+        this.hass.callService(domain, service, action.service_data || action.data || {});
         break;
     }
   }
