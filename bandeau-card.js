@@ -18,8 +18,8 @@ class BandeauCard extends LitElement {
     ha-card {
       border-radius: 20px;
       overflow: hidden;
-      border: 1px rgba(0,0,0,0.4) outset;
-      box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.5) !important;
+      border: none;
+      
     }
 
 
@@ -30,7 +30,8 @@ class BandeauCard extends LitElement {
       padding: 5px;
       border-radius: 20px;
       background: linear-gradient(#a8c8e8 0%, #dfeaf5 55%, #7fb3d5 100%);
-      box-shadow: rgba(50, 50, 93, 0) 0px 50px 100px -20px, rgba(0, 0, 0, 0) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset !important;
+      box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.5) !important;
+      border: 1px rgba(0,0,0,0.4) outset;
     }
 
     /* ===== TEMP STYLE ===== */
