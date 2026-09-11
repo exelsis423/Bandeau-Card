@@ -178,6 +178,11 @@ class BandeauCard extends LitElement {
     return "temp-hot";
   }
 
+ getTempFont(temp) {
+    const t = parseFloat(temp);
+    if (t <= 10) return "8.8°";
+    return "88.8°";
+  }
 
   getWeatherIcon(state) {
     const map = {
@@ -273,7 +278,7 @@ class BandeauCard extends LitElement {
             
             <!-- TEMP -->
             <div class="big ${this.getTempClass(temp)}"
-                 data-bg="88.8°"
+                 data-bg="${this.getTempFont(temp)}"
                  style="cursor:pointer"
                  @click=${() => this.handleTapAction(c.temperature_action || { action: "more-info", entity: c.temperature })}>
 
